@@ -17,11 +17,11 @@ body{
     overflow:hidden;
 }
 
-/* HEARTS */
+/* Floating hearts */
 .heart{
     position:absolute;
-    width:20px;
-    height:20px;
+    width:18px;
+    height:18px;
     background:red;
     transform:rotate(45deg);
     animation:float 6s infinite;
@@ -29,13 +29,13 @@ body{
 .heart:before,.heart:after{
     content:'';
     position:absolute;
-    width:20px;
-    height:20px;
+    width:18px;
+    height:18px;
     background:red;
     border-radius:50%;
 }
-.heart:before{top:-10px;left:0;}
-.heart:after{left:-10px;top:0;}
+.heart:before{top:-9px;left:0;}
+.heart:after{left:-9px;top:0;}
 
 @keyframes float{
     0%{bottom:-10%;opacity:0;}
@@ -46,15 +46,14 @@ body{
 .box{
     background:#fff;
     width:92%;
-    max-width:450px;
+    max-width:460px;
     padding:25px;
     border-radius:20px;
     text-align:center;
     box-shadow:0 15px 30px rgba(0,0,0,.25);
     display:none;
-    animation:fadeIn 1.5s ease;
+    animation:fadeIn 1.2s ease;
 }
-
 .box.active{display:block;}
 
 @keyframes fadeIn{
@@ -70,42 +69,49 @@ input{
     padding:10px;
     border-radius:10px;
     border:1px solid #ccc;
+    font-size:15px;
 }
 
 button{
     margin-top:15px;
-    padding:10px 25px;
+    padding:10px 22px;
     border:none;
     border-radius:20px;
     background:#ff4d6d;
     color:#fff;
-    font-size:16px;
+    font-size:15px;
     cursor:pointer;
 }
 
-.images img{
-    width:100%;
-    border-radius:15px;
-    margin-top:10px;
-}
-
+/* typing animation */
 .typing{
     border-right:2px solid #ff4d6d;
     white-space:pre-wrap;
     overflow:hidden;
+}
+
+/* slideshow */
+.slideshow img{
+    width:100%;
+    border-radius:15px;
+    animation:fade 0.5s ease;
+}
+@keyframes fade{
+    from{opacity:0;}
+    to{opacity:1;}
 }
 </style>
 </head>
 
 <body>
 
-<!-- floating hearts -->
+<!-- hearts -->
 <script>
-for(let i=0;i<20;i++){
-    let h=document.createElement('div');
-    h.className='heart';
-    h.style.left=Math.random()*100+'%';
-    h.style.animationDelay=Math.random()*5+'s';
+for(let i=0;i<18;i++){
+    let h=document.createElement("div");
+    h.className="heart";
+    h.style.left=Math.random()*100+"%";
+    h.style.animationDelay=Math.random()*5+"s";
     document.body.appendChild(h);
 }
 </script>
@@ -121,79 +127,101 @@ for(let i=0;i<20;i++){
 <!-- OPENING -->
 <div class="box" id="open">
 <h1 class="typing" id="openText"></h1>
-<button onclick="next('gallery')">Continue 💖</button>
+<button onclick="go('gallery')">Continue 💖</button>
 </div>
 
-<!-- IMAGES -->
+<!-- SLIDESHOW -->
 <div class="box" id="gallery">
 <h1>Memories 📸</h1>
-<div class="images">
-<img src="img1.jpg">
-<img src="img2.jpg">
-<img src="img3.jpg">
-<img src="img4.jpg">
-<img src="img5.jpg">
+
+<div class="slideshow">
+    <img id="slideImg" src="img1.jpg">
 </div>
-<button onclick="next('part1')">Next 💌</button>
+
+<div>
+    <button onclick="prevSlide()">⬅️ Previous</button>
+    <button onclick="nextSlide()">Next ➡️</button>
+</div>
+
+<button onclick="go('part1')">Continue 💌</button>
 </div>
 
 <!-- TEXT PART 1 -->
 <div class="box" id="part1">
 <p class="typing" id="t1"></p>
-<button onclick="next('part2')">Next ➡️</button>
+<button onclick="go('part2')">Next ➡️</button>
 </div>
 
 <!-- TEXT PART 2 -->
 <div class="box" id="part2">
 <p class="typing" id="t2"></p>
-<button onclick="next('part3')">Next ➡️</button>
+<button onclick="go('part3')">Next ➡️</button>
 </div>
 
 <!-- TEXT PART 3 -->
 <div class="box" id="part3">
 <p class="typing" id="t3"></p>
-<h1>❤️ Forever Grateful ❤️</h1>
+<h1>❤️ Always Special ❤️</h1>
 </div>
 
 <script>
+/* navigation */
+function go(id){
+    document.querySelectorAll(".box").forEach(b=>b.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+}
+
+/* password */
 function unlock(){
- if(document.getElementById('pass').value==="love0501"){
-   show('open');
-   typeText("openText","Happy Birthday Mardal Pilla 💕💖");
- } else alert("Wrong password 💔");
+    if(document.getElementById("pass").value==="love0501"){
+        go("open");
+        typeText("openText","Happy Birthday Mardal Pilla 💕💖");
+    }else alert("Wrong password 💔");
 }
 
-function show(id){
- document.querySelectorAll('.box').forEach(b=>b.classList.remove('active'));
- document.getElementById(id).classList.add('active');
+/* typing effect */
+function typeText(id,text){
+    let i=0;
+    let el=document.getElementById(id);
+    el.innerHTML="";
+    let timer=setInterval(()=>{
+        el.innerHTML+=text.charAt(i);
+        i++;
+        if(i>=text.length) clearInterval(timer);
+    },40);
 }
 
-function next(id){ show(id); }
-
-function typeText(el,text){
- let i=0;
- let target=document.getElementById(el);
- target.innerHTML="";
- let timer=setInterval(()=>{
-   target.innerHTML+=text.charAt(i);
-   i++;
-   if(i>=text.length) clearInterval(timer);
- },40);
+/* slideshow */
+let images=["img1.jpg","img2.jpg","img3.jpg","img4.jpg","img5.jpg"];
+let idx=0;
+function showSlide(){
+    document.getElementById("slideImg").src=images[idx];
+}
+function nextSlide(){
+    idx=(idx+1)%images.length;
+    showSlide();
+}
+function prevSlide(){
+    idx=(idx-1+images.length)%images.length;
+    showSlide();
 }
 
-/* YOUR TEXT */
-typeText("t1",`Happy happy happy birthday ne potti ☺️❤️🥰
+/* your text */
+typeText("t1",
+`Happy happy happy birthday ne potti ☺️❤️🥰
 Its about 05th January 2026.
-Elanti Day unttadhi ani Expect cheyyale...
-Anno memories tho unnam...`);
+Elanti day unttadhi ani expect cheyyale.
+Anno memories tho unnam…`);
 
-typeText("t2",`Mana journey 2nd year July 31st ki start ayindhi...
-Everything is destiny...
-Always with you as a well wisher and good friend for life long.`);
+typeText("t2",
+`Mana journey July 31st nunchi start ayindhi.
+Everything is destiny.
+Life long good friend & well wisher ga untanu.`);
 
-typeText("t3",`E 7 months training time lo life lo full twists...
-At the end of the day kalise unnam...
-Pandhi vi nuvvu 😂🫣 thittukoku malla 😄`);
+typeText("t3",
+`E 7 months training time lo chaala twists unnayi.
+At the end of the day kalise unnam.
+Pandhi vi nuvvu 😂🫣`);
 </script>
 
 </body>
