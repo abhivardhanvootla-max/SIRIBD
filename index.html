@@ -8,220 +8,120 @@
 <style>
 body{
     margin:0;
-    font-family:'Segoe UI',sans-serif;
+    font-family:Arial, sans-serif;
     background:linear-gradient(135deg,#ff758c,#ff7eb3);
     min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
-    overflow:hidden;
-}
-
-/* Floating hearts */
-.heart{
-    position:absolute;
-    width:18px;
-    height:18px;
-    background:red;
-    transform:rotate(45deg);
-    animation:float 6s infinite;
-}
-.heart:before,.heart:after{
-    content:'';
-    position:absolute;
-    width:18px;
-    height:18px;
-    background:red;
-    border-radius:50%;
-}
-.heart:before{top:-9px;left:0;}
-.heart:after{left:-9px;top:0;}
-
-@keyframes float{
-    0%{bottom:-10%;opacity:0;}
-    50%{opacity:1;}
-    100%{bottom:110%;opacity:0;}
 }
 
 .box{
     background:#fff;
     width:92%;
-    max-width:460px;
-    padding:25px;
-    border-radius:20px;
+    max-width:420px;
+    padding:20px;
+    border-radius:18px;
     text-align:center;
     box-shadow:0 15px 30px rgba(0,0,0,.25);
     display:none;
-    animation:fadeIn 1.2s ease;
 }
 .box.active{display:block;}
 
-@keyframes fadeIn{
-    from{opacity:0;transform:scale(.9);}
-    to{opacity:1;transform:scale(1);}
-}
-
 h1{color:#ff4d6d;}
-p{color:#444;font-size:15px;line-height:1.6;}
-
-input{
-    width:100%;
-    padding:10px;
-    border-radius:10px;
-    border:1px solid #ccc;
-    font-size:15px;
-}
 
 button{
-    margin-top:15px;
-    padding:10px 22px;
+    margin:8px;
+    padding:10px 18px;
     border:none;
     border-radius:20px;
     background:#ff4d6d;
-    color:#fff;
+    color:white;
     font-size:15px;
     cursor:pointer;
 }
 
-/* typing animation */
-.typing{
-    border-right:2px solid #ff4d6d;
-    white-space:pre-wrap;
-    overflow:hidden;
-}
-
-/* slideshow */
-.slideshow img{
+/* SLIDESHOW */
+#slide{
     width:100%;
     border-radius:15px;
-    animation:fade 0.5s ease;
-}
-@keyframes fade{
-    from{opacity:0;}
-    to{opacity:1;}
+    margin-top:10px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- hearts -->
-<script>
-for(let i=0;i<18;i++){
-    let h=document.createElement("div");
-    h.className="heart";
-    h.style.left=Math.random()*100+"%";
-    h.style.animationDelay=Math.random()*5+"s";
-    document.body.appendChild(h);
-}
-</script>
-
 <!-- PASSWORD -->
 <div class="box active" id="login">
 <h1>🔒 Private</h1>
-<p>Enter Password</p>
-<input type="password" id="pass">
+<input type="password" id="pass" placeholder="Password">
 <button onclick="unlock()">Open 💕</button>
 </div>
 
-<!-- OPENING -->
+<!-- OPEN -->
 <div class="box" id="open">
-<h1 class="typing" id="openText"></h1>
-<button onclick="go('gallery')">Continue 💖</button>
+<h1>Happy Birthday Mardal Pilla 💕💖</h1>
+<button onclick="showBox('gallery')">Continue 💖</button>
 </div>
 
 <!-- SLIDESHOW -->
 <div class="box" id="gallery">
 <h1>Memories 📸</h1>
 
-<div class="slideshow">
-    <img id="slideImg" src="img1.jpg">
-</div>
+<img id="slide" src="img1.jpg">
 
 <div>
-    <button onclick="prevSlide()">⬅️ Previous</button>
-    <button onclick="nextSlide()">Next ➡️</button>
+    <button onclick="prev()">⬅️ Previous</button>
+    <button onclick="next()">Next ➡️</button>
 </div>
 
-<button onclick="go('part1')">Continue 💌</button>
+<button onclick="showBox('end')">Continue 💌</button>
 </div>
 
-<!-- TEXT PART 1 -->
-<div class="box" id="part1">
-<p class="typing" id="t1"></p>
-<button onclick="go('part2')">Next ➡️</button>
-</div>
-
-<!-- TEXT PART 2 -->
-<div class="box" id="part2">
-<p class="typing" id="t2"></p>
-<button onclick="go('part3')">Next ➡️</button>
-</div>
-
-<!-- TEXT PART 3 -->
-<div class="box" id="part3">
-<p class="typing" id="t3"></p>
+<!-- END -->
+<div class="box" id="end">
 <h1>❤️ Always Special ❤️</h1>
+<p>Happy Birthday once again 🎂</p>
 </div>
 
 <script>
 /* navigation */
-function go(id){
-    document.querySelectorAll(".box").forEach(b=>b.classList.remove("active"));
-    document.getElementById(id).classList.add("active");
+function showBox(id){
+    document.querySelectorAll('.box').forEach(b=>b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
 }
 
 /* password */
 function unlock(){
     if(document.getElementById("pass").value==="love0501"){
-        go("open");
-        typeText("openText","Happy Birthday Mardal Pilla 💕💖");
-    }else alert("Wrong password 💔");
+        showBox("open");
+    }else{
+        alert("Wrong password");
+    }
 }
 
-/* typing effect */
-function typeText(id,text){
-    let i=0;
-    let el=document.getElementById(id);
-    el.innerHTML="";
-    let timer=setInterval(()=>{
-        el.innerHTML+=text.charAt(i);
-        i++;
-        if(i>=text.length) clearInterval(timer);
-    },40);
+/* slideshow logic */
+let images = [
+    "img1.jpg",
+    "img2.jpg",
+    "img3.jpg",
+    "img4.jpg",
+    "img5.jpg"
+];
+let i = 0;
+
+function next(){
+    i++;
+    if(i >= images.length){ i = 0; }
+    document.getElementById("slide").src = images[i];
 }
 
-/* slideshow */
-let images=["img1.jpg","img2.jpg","img3.jpg","img4.jpg","img5.jpg"];
-let idx=0;
-function showSlide(){
-    document.getElementById("slideImg").src=images[idx];
+function prev(){
+    i--;
+    if(i < 0){ i = images.length - 1; }
+    document.getElementById("slide").src = images[i];
 }
-function nextSlide(){
-    idx=(idx+1)%images.length;
-    showSlide();
-}
-function prevSlide(){
-    idx=(idx-1+images.length)%images.length;
-    showSlide();
-}
-
-/* your text */
-typeText("t1",
-`Happy happy happy birthday ne potti ☺️❤️🥰
-Its about 05th January 2026.
-Elanti day unttadhi ani expect cheyyale.
-Anno memories tho unnam…`);
-
-typeText("t2",
-`Mana journey July 31st nunchi start ayindhi.
-Everything is destiny.
-Life long good friend & well wisher ga untanu.`);
-
-typeText("t3",
-`E 7 months training time lo chaala twists unnayi.
-At the end of the day kalise unnam.
-Pandhi vi nuvvu 😂🫣`);
 </script>
 
 </body>
