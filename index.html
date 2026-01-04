@@ -14,6 +14,33 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
+    overflow:hidden;
+}
+
+/* hearts */
+.heart{
+    position:absolute;
+    width:16px;
+    height:16px;
+    background:red;
+    transform:rotate(45deg);
+    animation:float 6s infinite;
+}
+.heart:before,.heart:after{
+    content:'';
+    position:absolute;
+    width:16px;
+    height:16px;
+    background:red;
+    border-radius:50%;
+}
+.heart:before{top:-8px;left:0;}
+.heart:after{left:-8px;top:0;}
+
+@keyframes float{
+    0%{bottom:-10%;opacity:0;}
+    50%{opacity:1;}
+    100%{bottom:110%;opacity:0;}
 }
 
 .box{
@@ -29,6 +56,7 @@ body{
 .box.active{display:block;}
 
 h1{color:#ff4d6d;}
+p{color:#444;font-size:15px;line-height:1.6;}
 
 button{
     margin:8px;
@@ -41,16 +69,34 @@ button{
     cursor:pointer;
 }
 
-/* SLIDESHOW */
+/* slideshow */
 #slide{
     width:100%;
     border-radius:15px;
     margin-top:10px;
 }
+
+/* typing */
+.typing{
+    border-right:2px solid #ff4d6d;
+    white-space:pre-wrap;
+    overflow:hidden;
+}
 </style>
 </head>
 
 <body>
+
+<!-- floating hearts -->
+<script>
+for(let i=0;i<18;i++){
+    let h=document.createElement("div");
+    h.className="heart";
+    h.style.left=Math.random()*100+"%";
+    h.style.animationDelay=Math.random()*5+"s";
+    document.body.appendChild(h);
+}
+</script>
 
 <!-- PASSWORD -->
 <div class="box active" id="login">
@@ -59,9 +105,9 @@ button{
 <button onclick="unlock()">Open 💕</button>
 </div>
 
-<!-- OPEN -->
+<!-- OPENING -->
 <div class="box" id="open">
-<h1>Happy Birthday Mardal Pilla 💕💖</h1>
+<h1 class="typing" id="openText"></h1>
 <button onclick="showBox('gallery')">Continue 💖</button>
 </div>
 
@@ -76,7 +122,25 @@ button{
     <button onclick="next()">Next ➡️</button>
 </div>
 
-<button onclick="showBox('end')">Continue 💌</button>
+<button onclick="startText1()">Continue 💌</button>
+</div>
+
+<!-- TEXT PART 1 -->
+<div class="box" id="text1">
+<p class="typing" id="t1"></p>
+<button onclick="startText2()">Next ➡️</button>
+</div>
+
+<!-- TEXT PART 2 -->
+<div class="box" id="text2">
+<p class="typing" id="t2"></p>
+<button onclick="startText3()">Next ➡️</button>
+</div>
+
+<!-- TEXT PART 3 -->
+<div class="box" id="text3">
+<p class="typing" id="t3"></p>
+<button onclick="showBox('end')">Finish ❤️</button>
 </div>
 
 <!-- END -->
@@ -86,7 +150,6 @@ button{
 </div>
 
 <script>
-/* navigation */
 function showBox(id){
     document.querySelectorAll('.box').forEach(b=>b.classList.remove('active'));
     document.getElementById(id).classList.add('active');
@@ -96,31 +159,79 @@ function showBox(id){
 function unlock(){
     if(document.getElementById("pass").value==="love0501"){
         showBox("open");
+        typeText("openText","Happy Birthday Mardal Pilla 💕💖");
     }else{
         alert("Wrong password");
     }
 }
 
-/* slideshow logic */
-let images = [
-    "img1.jpg",
-    "img2.jpg",
-    "img3.jpg",
-    "img4.jpg",
-    "img5.jpg"
-];
-let i = 0;
+/* slideshow */
+let images=["img1.jpg","img2.jpg","img3.jpg","img4.jpg","img5.jpg"];
+let i=0;
+function next(){ i=(i+1)%images.length; document.getElementById("slide").src=images[i]; }
+function prev(){ i=(i-1+images.length)%images.length; document.getElementById("slide").src=images[i]; }
 
-function next(){
-    i++;
-    if(i >= images.length){ i = 0; }
-    document.getElementById("slide").src = images[i];
+/* typing */
+function typeText(id,text){
+    let el=document.getElementById(id);
+    el.innerHTML="";
+    let x=0;
+    let t=setInterval(()=>{
+        el.innerHTML+=text.charAt(x);
+        x++;
+        if(x>=text.length) clearInterval(t);
+    },30);
 }
 
-function prev(){
-    i--;
-    if(i < 0){ i = images.length - 1; }
-    document.getElementById("slide").src = images[i];
+/* TEXT CONTENT (YOUR EXACT WORDS) */
+function startText1(){
+    showBox("text1");
+    typeText("t1",
+`Happy happy happy birthday ne potti ☺️❤️🥰
+Its about 05th January 2026.
+Elanti Day unttadhi ani Expect cheyyale
+Eroju 2026 and 2nd year mana kalsi undi
+and 3 years ayindhi manam frds la unda batti.
+Okka chinna day ela change avthadhi ani expect cheyyale.
+Anno marichi poleni days.
+Anno memories tho unnam.
+Chaala ante chaala interesting ga undhi
+inni godavalu ayina kuda kalisi unnam ante.
+But inkka anni rojulu ela untamo telidhu
+kani unnatha sepu happy ga undali ani konukunta.
+Ee link ni kosam ae create chesina.`);
+}
+
+function startText2(){
+    showBox("text2");
+    typeText("t2",
+`Mana journey 2nd year July 31st ki start ayindhi
+adhi kastha 31st October ki different ga change ayindhi.
+Everything is destiny ante idhe nemo.
+But whatever would be
+I am always with you as partner for temporary
+but as a well wisher and good friend for life long.
+Koncham naa maatalu ninnu baadha pettachu
+kani konnintini manam accept cheyyali.
+Ee secret relation okka manchi vibe isthundhi
+because avvaru manalani judge cheyyaru.`);
+}
+
+function startText3(){
+    showBox("text3");
+    typeText("t3",
+`So ela undhi present ayithe future manaku telusu
+kani konnintiki expiry untadhi manaku kuda.
+Ee 7 months training time lo
+mana life lo full twists unnayi.
+Almost vadilesam ani anukunnam
+kani at the end of the day eroju iddaram kalise unnam.
+Inka cheppevi unnayi
+kani koncham aagudham.
+Aa meda chusi padi poyna nenu 😄
+kani nuv andhariki kanipinchavu
+pandhi vi nuvvu 😂🫣
+thittukoku malla.`);
 }
 </script>
 
